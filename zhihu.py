@@ -32,7 +32,7 @@ def execute_times(times):
         js="window.scrollTo(0, document.body.scrollHeight);"
         driver.execute_script(js)
         time.sleep(5)
-execute_times(10)
+execute_times(100)
 # 解析网页
 html=driver.page_source
 soup1=BeautifulSoup(html,'lxml')
