@@ -2,6 +2,7 @@
 from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
+import csv
 # 用Chrome浏览器打开
 driver=webdriver.Chrome()
 # 打开网址
@@ -11,9 +12,9 @@ time.sleep(2)
 driver.find_element_by_css_selector('a[href="#signin"]').click()
 time.sleep(2)
 # 找到输入框并输入账号
-driver.find_element_by_name("account").send_keys("账号")
+driver.find_element_by_name("account").send_keys("zh")
 time.sleep(2)
-driver.find_element_by_name("password").send_keys("密码")
+driver.find_element_by_name("password").send_keys("passwd")
 time.sleep(2)
 # 手动输入验证码
 yzm=input("")
@@ -37,20 +38,20 @@ execute_times(100)
 html=driver.page_source
 soup1=BeautifulSoup(html,'lxml')
 authors=soup1.select('a.author-link')
+# 答主ID名
 authors_alls=[]
+# 答主主页地址
 authors_hrefs=[]
 for author in authors:
     authors_alls.append(author.get_text())
     authors_hrefs.append('http://www.zhihu.com'+author.get('href'))
-authors_intros_urls=soup1.select('span.bio')
+# 答主简介
+authors_intros_urls=soup1.find_all('span',class_='bio')
 authors_intros=[]
 for authors_intros_url in authors_intros_urls:
     authors_intros.append(authors_intros_url.get_text())
-
+csvfile=open('知乎答主信息.csv','w+',encoding='utf-8')
 for authors_all,authors_href,authors_intro in zip(authors_alls,authors_hrefs,authors_intros):
-    data={
-        'author':authors_all,
-        'href':authors_href,
-        'intro':authors_intro
-    }
-    print(data)
+    data=[authors_all,authors_href,authors_intro]
+    writer=csv.writer(csvfile)
+    writer.writerow(data)
